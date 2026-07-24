@@ -1,0 +1,206 @@
+:root{
+  --ocean-1:#0a6e78;
+  --ocean-2:#0e93a3;
+  --ink:#0b3d4a;
+  --coral:#ff6f59;
+  --sun:#ffc93c;
+  --leaf:#4fb477;
+  --card-bg:#fffdf6;
+  --white:#ffffff;
+  --outsider-fill:#6f7a86;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.10), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(255,255,255,0.08), transparent 45%),
+    linear-gradient(160deg, var(--ocean-1), var(--ocean-2) 60%, #0a6e78 100%);
+  min-height:100vh;
+  color:var(--ink);
+  overflow-x:hidden;
+}
+.wave-strip{
+  position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+  background-image: repeating-radial-gradient(circle at 50% 120%, transparent 0 40px, rgba(255,255,255,.04) 40px 42px);
+}
+.wrap{max-width:1180px; margin:0 auto; padding:20px 18px 60px; position:relative; z-index:1;}
+
+/* Header */
+header{text-align:center; padding:18px 0 10px;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35);
+  color:#eafcff; font-weight:700; font-size:13px; letter-spacing:.08em;
+  padding:6px 16px; border-radius:999px; text-transform:uppercase;
+}
+h1{
+  font-family:'Baloo 2', cursive;
+  font-size:clamp(34px, 6vw, 64px);
+  color:var(--white);
+  margin:12px 0 6px;
+  text-shadow: 0 4px 0 rgba(0,0,0,.12);
+  letter-spacing:.5px;
+}
+h1 span{color:var(--sun);}
+.subtitle{color:#e3fbff; font-size:16px; max-width:560px; margin:0 auto; font-weight:600; opacity:.92;}
+
+/* Passport progress bar */
+.passport{
+  margin:22px auto 0; max-width:640px;
+  background:rgba(255,255,255,.14); border:1.5px dashed rgba(255,255,255,.55);
+  border-radius:18px; padding:12px 18px; display:flex; align-items:center; gap:14px;
+  backdrop-filter:blur(2px);
+}
+.passport .stamp-icon{font-size:28px;}
+.passport-text{flex:1; text-align:left; color:#fff;}
+.passport-text b{font-family:'Baloo 2'; font-size:15px;}
+.passport-bar{height:10px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden; margin-top:5px;}
+.passport-bar-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--sun),var(--coral)); border-radius:999px; transition:width .5s ease;}
+.passport-count{font-family:'Baloo 2'; color:var(--sun); font-size:20px; white-space:nowrap;}
+
+/* Controls */
+.controls{
+  display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:center;
+  margin:22px 0 8px;
+}
+.search-box{
+  display:flex; align-items:center; gap:8px;
+  background:var(--white); border-radius:999px; padding:10px 18px;
+  box-shadow:0 6px 18px rgba(0,0,0,.15); min-width:260px;
+}
+.search-box input{
+  border:none; outline:none; font-family:'Nunito'; font-weight:700; font-size:15px; flex:1; color:var(--ink);
+  background:transparent;
+}
+.search-box span{font-size:18px;}
+.pill-btn{
+  font-family:'Baloo 2'; font-weight:600; font-size:15px; cursor:pointer;
+  border:none; border-radius:999px; padding:11px 22px; color:#fff;
+  background:var(--coral); box-shadow:0 6px 16px rgba(255,111,89,.4);
+  transition:transform .15s ease;
+}
+.pill-btn:hover{transform:translateY(-2px) scale(1.03);}
+.pill-btn.secondary{background:var(--leaf); box-shadow:0 6px 16px rgba(79,180,119,.4);}
+.pill-btn.ghost{background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.5); box-shadow:none;}
+
+/* island filter chips */
+.chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 6px;}
+.chip{
+  font-size:13px; font-weight:800; padding:6px 14px; border-radius:999px; cursor:pointer;
+  background:rgba(255,255,255,.14); color:#eafcff; border:1px solid rgba(255,255,255,.35);
+  transition:all .15s ease;
+}
+.chip.active, .chip:hover{background:var(--sun); color:#3a2600; border-color:var(--sun);}
+
+/* Map area */
+.map-card{
+  margin-top:20px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.25);
+  border-radius:28px; padding:14px; position:relative;
+}
+.map-scroll{ overflow-x:auto; }
+svg#map{ width:100%; min-width:760px; height:auto; display:block; }
+
+/* Real province shapes (paths taken from an accurate outline of Indonesia) */
+.province-shape{ cursor:pointer; }
+.province-shape path{
+  stroke:#ffffff;
+  stroke-width:1.2;
+  transition: filter .15s ease, opacity .15s ease;
+}
+.province-shape:hover path{ filter:brightness(1.15); }
+.province-shape.active path{ stroke:#0b3d4a; stroke-width:2.6; filter:brightness(1.12); }
+
+/* Neighbouring countries / context landmass, non-interactive */
+.outsider-context path{
+  fill:var(--outsider-fill);
+  stroke:#33333388;
+  stroke-width:1;
+}
+.outsider-context{ opacity:.35; pointer-events:none; }
+
+/* Marker dots for provinces without a distinct shape in the source map
+   (new pemekaran provinces + DKI Jakarta) */
+.province-dot{ cursor:pointer; stroke:#fff; stroke-width:2.5; transition: r .15s ease, filter .15s ease; }
+.province-dot:hover{ filter:brightness(1.15); }
+.province-marker-group.active .province-dot{ stroke:#0b3d4a; stroke-width:3.5; }
+
+.province-pulse{ fill:none; stroke-width:2; opacity:0; pointer-events:none; }
+
+.province-label-tag{
+  font-family:'Nunito'; font-size:9px; font-weight:800; fill:#ffffff; opacity:0;
+  pointer-events:none; transition:opacity .15s ease;
+  paint-order: stroke;
+  stroke:#0b3d4a; stroke-width:2.4px; stroke-linejoin:round;
+}
+.province-shape:hover ~ .province-label-tag,
+.province-shape.active ~ .province-label-tag,
+.province-marker-group:hover .province-label-tag,
+.province-marker-group.active .province-label-tag{ opacity:1; }
+
+.quiz-target{ animation:targetPulse 1.1s infinite; }
+@keyframes targetPulse{
+  0%{ transform:scale(1); }
+  50%{ transform:scale(1.35); }
+  100%{ transform:scale(1); }
+}
+
+/* Mascot */
+.mascot-bubble{
+  position:absolute; top:18px; right:18px; max-width:230px;
+  background:var(--white); border-radius:18px 18px 4px 18px; padding:12px 14px;
+  box-shadow:0 8px 20px rgba(0,0,0,.2); font-weight:700; font-size:13.5px; color:var(--ink);
+  display:flex; gap:8px; align-items:flex-start; z-index:2;
+}
+.mascot-bubble .em{font-size:26px; line-height:1;}
+
+/* Info card */
+.info-card{
+  margin-top:26px; background:var(--card-bg); border:4px solid var(--sun);
+  border-radius:26px; padding:26px 28px; box-shadow:0 14px 30px rgba(0,0,0,.25);
+  display:none; position:relative; animation:pop .35s ease;
+}
+.info-card.show{display:block;}
+@keyframes pop{ from{ transform:scale(.9); opacity:0;} to{transform:scale(1); opacity:1;} }
+.info-card::before{
+  content:"✓ DIJELAJAHI"; position:absolute; top:-16px; left:26px;
+  background:var(--leaf); color:#fff; font-family:'Baloo 2'; font-size:12px;
+  padding:5px 14px; border-radius:999px; letter-spacing:1px; box-shadow:0 4px 8px rgba(0,0,0,.15);
+}
+.info-top{display:flex; gap:18px; align-items:center; flex-wrap:wrap;}
+.info-badge{
+  width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:32px; flex-shrink:0; box-shadow:inset 0 0 0 4px rgba(255,255,255,.5);
+}
+.info-title{font-family:'Baloo 2'; font-size:26px; color:var(--ink); margin:0;}
+.info-sub{font-weight:800; color:#8a6d16; font-size:14px; margin-top:2px;}
+.info-fact{
+  margin-top:16px; background:#fff8e6; border-left:5px solid var(--coral);
+  border-radius:10px; padding:14px 16px; font-size:15.5px; font-weight:700; line-height:1.5;
+}
+.info-meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+.meta-tag{
+  background:#eafcf1; color:#217a45; font-weight:800; font-size:12.5px;
+  padding:6px 12px; border-radius:999px;
+}
+.close-x{
+  position:absolute; top:16px; right:18px; background:none; border:none; font-size:20px;
+  cursor:pointer; color:#b98f2a; font-weight:800;
+}
+
+/* Quiz panel */
+.quiz-panel{
+  margin-top:20px; background:rgba(255,255,255,.95); border-radius:22px; padding:18px 22px;
+  box-shadow:0 10px 24px rgba(0,0,0,.2); display:none; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.quiz-panel.show{display:flex;}
+.quiz-question{font-family:'Baloo 2'; font-size:19px; color:var(--ink);}
+.quiz-score{font-weight:800; color:var(--leaf); font-size:15px;}
+.quiz-feedback{font-weight:800; font-size:15px; min-height:20px;}
+
+footer{text-align:center; color:#e3fbff; opacity:.75; font-size:13px; margin-top:36px;}
+
+@media (max-width:700px){
+  .mascot-bubble{position:static; margin-bottom:10px; max-width:100%;}
+}
